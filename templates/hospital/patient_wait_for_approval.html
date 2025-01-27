@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>LazyCoder || sumit</title>
+  <title>CareSewa - HMS</title>
 
 
   <style media="screen">
@@ -37,6 +37,11 @@
     <p>Check Later</p>
     <p class="lead">
       <a class="btn btn-primary btn-lg" href="hospital/home" role="button">Logout For Now</a>
+      <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" style="border-radius: 5px; padding: 5px;" >Logout</button>
+      </form>
+
     </p>
   </div>
 

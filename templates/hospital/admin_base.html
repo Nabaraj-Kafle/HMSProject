@@ -4,7 +4,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>LazyCoder || sumit</title>
+  <title>CareSewa - HMS</title>
 
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -305,8 +305,14 @@
         </button>
         <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
           <div class="navbar-nav" style=" margin-left: 90%;">
+            <form method="post" action="{% url 'logout' %}">
+              {% csrf_token %}
+              <button type="submit" style="border-radius: 5px; padding: 5px;" >Logout</button>
+            </form>
 
-            <a href="/logout" class="nav-item nav-link">Logout</a>
+           
+
+          
           </div>
         </div>
       </nav>
@@ -330,7 +336,7 @@
         <div class="row">
           <div class="col-md-12 col-sm-12">
             <div style="color:#ffffff;" class="wow fadeInUp footer-copyright">
-              <p>Copyright &copy; 2024 NNS </p>
+              {% comment %} <p>Copyright &copy; 2024 NNS </p> {% endcomment %}
             </div>
           </div>
         </div>

@@ -4,7 +4,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>LazyCoder || sumit</title>
+  <title>CareSewa - HMS</title>
 
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -299,6 +299,10 @@
         </button>
         <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
           <div class="navbar-nav" style=" margin-left: 90%;">
+            <form method="post" action="{% url 'logout' %}">
+              {% csrf_token %}
+              <button type="submit" style="border-radius: 5px; padding: 5px;" >Logout</button>
+            </form>
 
             <a href="/logout" class="nav-item nav-link">Logout</a>
           </div>
@@ -323,21 +327,16 @@
       <div class="container">
         <div class="row">
           <div class="col-md-12 col-sm-12">
-            <div style="color:#ffffff;" class="wow fadeInUp footer-copyright">
+            {% comment %} <div style="color:#ffffff;" class="wow fadeInUp footer-copyright">
               <p>Made in India <br>
                 Copyright &copy; 2020 LazyCoder </p>
-            </div>
+            </div> {% endcomment %}
           </div>
         </div>
       </div>
     </footer>
   </main>
-  <!--
-  developed By : sumit kumar
-  facebook : fb.com/sumit.luv
-  youtube : youtube.com/lazycoders
-  -->
-
+ 
 </body>
 
 </html>

@@ -8,6 +8,8 @@ from django.contrib.auth.decorators import login_required,user_passes_test
 from datetime import datetime,timedelta,date
 from django.conf import settings
 from django.db.models import Q
+from django.contrib.auth import logout
+from django.shortcuts import redirect
 
 # Create your views here.
 def home_view(request):
@@ -35,6 +37,16 @@ def patientclick_view(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect('afterlogin')
     return render(request,'hospital/patientclick.html')
+
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('home')  # Redirect to the login page
+
+def csrf_failure(request, reason=""):
+    return render(request, 'csrf_failure.html', {'reason': reason})
+
 
 
 

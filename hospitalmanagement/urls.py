@@ -1,17 +1,23 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
 from hospital import views
 from django.contrib.auth.views import LoginView,LogoutView
 
 
 #-------------FOR ADMIN RELATED URLS
+app_name = 'hospital'
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.home_view,name=''),
     path('hospital/home', views.home_view),
+    #path('logout/', views.custom_logout_view, name='logout'),
+    path('logout/', LogoutView.as_view(), name='logout'),
+    
+    path('afterlogin/', views.afterlogin_view, name='afterlogin'),
 
-   # path('afterlogin/', views.afterlogin_view, name='afterlogin'),
 
+    # other urls
+    path('schedule/', include('schedule.urls')),
 
 
     path('aboutus', views.aboutus_view),
