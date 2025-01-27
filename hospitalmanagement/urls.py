@@ -17,7 +17,7 @@ urlpatterns = [
 
 
     # other urls
-    path('schedule/', include('schedule.urls')),
+    
 
 
     path('aboutus', views.aboutus_view),
