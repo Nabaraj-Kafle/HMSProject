@@ -3,13 +3,33 @@ from django.contrib.auth.models import User
 
 
 
-departments=[('Cardiologist','Cardiologist'),
-('Dermatologists','Dermatologists'),
-('Emergency Medicine Specialists','Emergency Medicine Specialists'),
-('Allergists/Immunologists','Allergists/Immunologists'),
-('Anesthesiologists','Anesthesiologists'),
-('Colon and Rectal Surgeons','Colon and Rectal Surgeons')
+departments=[
+    ('Cardiologist','Cardiologist'),
+    ('Dermatologists', 'Dermatologists'),
+    ('Emergency Medicine Specialists', 'Emergency Medicine Specialists'),
+    ('Allergists/Immunologists', 'Allergists/Immunologists'),
+    ('Anesthesiologists', 'Anesthesiologists'),
+    ('Colon and Rectal Surgeons', 'Colon and Rectal Surgeons'),
+    ('Endocrinologists', 'Endocrinologists'),
+    ('Gastroenterologists', 'Gastroenterologists'),
+    ('Hematologists', 'Hematologists'),
+    ('Infectious Disease Specialists', 'Infectious Disease Specialists'),
+    ('Nephrologists', 'Nephrologists'),
+    ('Neurologists', 'Neurologists'),
+    ('Obstetricians/Gynecologists', 'Obstetricians/Gynecologists'),
+    ('Oncologists', 'Oncologists'),
+    ('Ophthalmologists', 'Ophthalmologists'),
+    ('Orthopedic Surgeons', 'Orthopedic Surgeons'),
+    ('Otolaryngologists', 'Otolaryngologists'),
+    ('Pathologists', 'Pathologists'),
+    ('Pediatricians', 'Pediatricians'),
+    ('Psychiatrists', 'Psychiatrists'),
+    ('Pulmonologists', 'Pulmonologists'),
+    ('Radiologists', 'Radiologists'),
+    ('Rheumatologists', 'Rheumatologists'),
+    ('Urologists', 'Urologists')
 ]
+
 class Doctor(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
     profile_pic= models.ImageField(upload_to='profile_pic/DoctorProfilePic/',null=True,blank=True)
@@ -32,6 +52,8 @@ class Patient(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
     profile_pic= models.ImageField(upload_to='profile_pic/PatientProfilePic/',null=True,blank=True)
     address = models.CharField(max_length=40)
+    age = models.CharField(max_length=10, null=False, default=0)
+    gender = models.CharField(max_length=10, null=False, default='Male')    
     mobile = models.CharField(max_length=20,null=False)
     symptoms = models.CharField(max_length=100,null=False)
     assignedDoctorId = models.PositiveIntegerField(null=True)

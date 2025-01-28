@@ -80,22 +80,36 @@
                 {% render_field userForm.username class="form-control" placeholder="Username" %}
               </div>
               <div class="form-group">
+                {% render_field patientForm.age class="form-control" pattern="^(?:[1-9]?[0-9]|100)$" placeholder="Age" %}
+              </div>
+              <div class="form-group">
                 {% render_field patientForm.address class="form-control" placeholder="Address" %}
               </div>
+              
               <div class="form-group">
                 {% render_field patientForm.symptoms class="form-control" placeholder="Symptoms" %}
               </div>
               <div class="form-group">
                 {% render_field patientForm.profile_pic required="required" class="form-control" placeholder="Profile Picture" %}
               </div>
-            </div>
-            <div class="col-md-6">
+              </div>
+              <div class="col-md-6">
               <div class="form-group">
                 {% render_field userForm.last_name class="form-control" placeholder="Last Name" %}
               </div>
               <div class="form-group">
                 {% render_field userForm.password class="form-control" placeholder="Password" %}
               </div>
+              <div class="form-group">
+                <label>Gender:</label>
+                {% for radio in patientForm.gender %}
+                    <label for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+                    {{ radio.tag }}
+                {% endfor %}
+
+              </div>
+
+              
               <div class="form-group">
                 {% render_field patientForm.mobile class="form-control" pattern="[6789][0-9]{9}" placeholder="Mobile Number" %}
               </div>
