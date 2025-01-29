@@ -59,12 +59,42 @@
   <p class="lead">
     <a class="btn btn-primary btn-lg" href="/patientclick" role="button">Take Appointment</a>
   </p>
+ 
+
+  
   <br><br>
 </div>
+<!-- Debug section -->
+{{ doctors.count }}  <!-- This will show how many doctors are being passed -->
+
+<!-- Doctors section -->
+<section class="container mt-5">
+    <h2 class="text-center mb-4">Our Specialist Doctors</h2>
+    <div class="row">
+        {% for doctor in doctors %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Dr. {{ doctor.get_name }}</h5>
+                        <p class="card-text">
+                            <strong>Department:</strong> {{ doctor.department }}
+                        </p>
+                        <p class="card-text">
+                            <strong>Contact:</strong> {{ doctor.mobile }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12 text-center">
+                <p>No doctors available at the moment.</p>
+            </div>
+        {% endfor %}
+    </div>
+</section>
 
 <br><br><br><br>
 
-{% include "hospital/admin_doctor_patient_card.html" %}
 <br><br><br>
 
 {% endblock content %}
