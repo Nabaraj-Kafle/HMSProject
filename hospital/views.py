@@ -13,43 +13,26 @@ from django.shortcuts import redirect
 
 # Create your views here.
 def home_view(request):
-
-    print("Fetching doctors...")  # Add this debug print
-    doctors = Doctor.objects.filter(status=True).order_by('?')[:6]
-    print(f"Found {len(doctors)} doctors")  # Add this debug print
-
-    recommended_doctors = Doctor.objects.filter(status=True).order_by('?')[:6]  # Get 6 random active doctors    
-    context = {
-        'recommended_doctors': recommended_doctors,
-        # ... your other context data ...
-    }
     if request.user.is_authenticated:
         return HttpResponseRedirect('afterlogin')
     return render(request,'hospital/index.html')
 
-def get_recommendations_for_symptoms(symptoms, limit=5):
-    """Generic function to get recommendations for any symptoms"""
-    if not symptoms:
-        # If no symptoms, return random doctors
-        return Doctor.objects.filter(status=True).order_by('?')[:limit]
-        
-    return Patient(symptoms=symptoms).get_recommended_doctors(limit)
 
-#for showing signup/login button for admin
+#for showing signup/login button for admin(by sumit)
 def adminclick_view(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect('afterlogin')
     return render(request,'hospital/adminclick.html')
 
 
-#for showing signup/login button for doctor
+#for showing signup/login button for doctor(by sumit)
 def doctorclick_view(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect('afterlogin')
     return render(request,'hospital/doctorclick.html')
 
 
-#for showing signup/login button for patient
+#for showing signup/login button for patient(by sumit)
 def patientclick_view(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect('afterlogin')
@@ -61,7 +44,7 @@ def logout_view(request):
     logout(request)
     return redirect('home')  # Redirect to the login page
 
-def csrf_failure(request, reason="error"):
+def csrf_failure(request, reason=""):
     return render(request, 'csrf_failure.html', {'reason': reason})
 
 
@@ -768,8 +751,6 @@ def delete_appointment_view(request,pk):
 def patient_dashboard_view(request):
     patient=models.Patient.objects.get(user_id=request.user.id)
     doctor=models.Doctor.objects.get(user_id=patient.assignedDoctorId)
-    recommended_doctors = patient.get_recommended_doctors()
-
     mydict={
     'patient':patient,
     'doctorName':doctor.get_name,
@@ -778,9 +759,6 @@ def patient_dashboard_view(request):
     'symptoms':patient.symptoms,
     'doctorDepartment':doctor.department,
     'admitDate':patient.admitDate,
-    }
-    context = {
-            'recommended_doctors': recommended_doctors,
     }
     return render(request,'hospital/patient_dashboard.html',context=mydict)
 
@@ -881,6 +859,8 @@ def patient_discharge_view(request):
             'patientId':request.user.id,
         }
     return render(request,'hospital/patient_discharge.html',context=patientDict)
+
+    
 
 
 #------------------------ PATIENT RELATED VIEWS END ------------------------------

@@ -65,7 +65,7 @@ class DoctorAvailability(models.Model):
     end_time = models.TimeField()    # End time of availability
     #added after edit 2
     date = models.DateField(default=timezone.now)  # Use the current date as default    #added after edit 2
-    time_slot = models.CharField(max_length=10)  # Store time slot (e.g. "09:00 AM")  #edit 4
+    time_slot = models.CharField(max_length=100, default='default_time')  #edit 4
 
 
     #added after edit 2 (placed instead of xx3)
@@ -88,7 +88,8 @@ class Patient(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
     profile_pic= models.ImageField(upload_to='profile_pic/PatientProfilePic/',null=True,blank=True)
     address = models.CharField(max_length=40)
-    age = models.CharField(max_length=10, null=False, default=0)
+    # age = models.IntegerField()  # Make sure this field exists
+    # age = models.CharField(max_length=10, null=False, default=0)
     gender = models.CharField(max_length=10, null=False, default='Male')    
     mobile = models.CharField(max_length=20,null=False)
     symptoms = models.CharField(max_length=100,null=False)
@@ -170,18 +171,29 @@ class PatientDischargeDetails(models.Model):
     doctorFee=models.PositiveIntegerField(null=False)
     OtherCharge=models.PositiveIntegerField(null=False)
     total=models.PositiveIntegerField(null=False)
+    id = models.BigAutoField(primary_key=True) #edit 4
 
-class DoctorSpecialization(models.Model):
-    department = models.CharField(max_length=50, choices=departments)
-    keywords = models.TextField(help_text="Comma-separated keywords related to this specialization")
+# class DoctorSpecialization(models.Model):
+#     department = models.CharField(max_length=50, choices=departments)
+#     keywords = models.TextField(help_text="Comma-separated keywords related to this specialization")
     
-    def __str__(self):
-        return self.department
+#     def __str__(self):
+#         return self.department
 
-class SymptomDepartmentMapping(models.Model):
-    symptom = models.CharField(max_length=100)
-    department = models.ForeignKey(DoctorSpecialization, on_delete=models.CASCADE)
-    weight = models.FloatField(default=1.0)
+# class SymptomDepartmentMapping(models.Model):
+#     symptom = models.CharField(max_length=100)
+#     department = models.ForeignKey(DoctorSpecialization, on_delete=models.CASCADE)
+#     weight = models.FloatField(default=1.0)
     
-    def __str__(self):
-        return f"{self.symptom} -> {self.department}"
+#     def __str__(self):
+#         return f"{self.symptom} -> {self.department}"
+
+
+
+
+
+
+
+
+
+

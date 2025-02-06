@@ -24,6 +24,8 @@ STATIC_DIR=os.path.join(BASE_DIR,'static')
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'hpbv()ep00boce&o0w7z1h)st148(*m@6@-rk$nn)(n9ojj4c0'
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'  #edit 4
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
