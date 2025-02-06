@@ -46,6 +46,21 @@
       background: #0062cc;
       color: #fff;
     }
+    /* Custom CSS for horizontal alignment of checkboxes */
+    .form-group .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px; /* Optional: Adjust the spacing between checkboxes */
+    }
+
+    .form-group .checkbox-group input[type="checkbox"] {
+      margin-right: 10px; /* Optional: Adds space between the checkbox and the label */
+    }
+
+    .form-group .checkbox-group label {
+      display: inline-block;
+      margin-right: 15px; /* Optional: Adjusts the gap between the label and the checkbox */
+    }
   </style>
 
 </head>
@@ -61,7 +76,7 @@
 
 
 
-  <!--- signup page for doctor by admin(sumit)  ---------->
+  <!--- signup page for doctor ---------->
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="container register-form">
@@ -103,6 +118,25 @@
 
             </div>
           </div>
+          
+
+          <!-- edit paxi -->
+
+          <div class="form-group">
+            <label for="available_times">Select Available Time Slots</label>
+            <div class="checkbox-group">
+              {% for time_slot in doctorForm.fields.available_times.choices %}
+                <div>
+                  <input type="checkbox" name="available_times" value="{{ time_slot.0 }}">
+                  <label>{{ time_slot.1 }}</label>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- edit paxi -->
+
+
           <button type="submit" class="btnSubmit">Register</button>
           <div class="text-center">Already have an account? <a href="doctorlogin">Login here</a></div>
         </div>

@@ -4,7 +4,257 @@
 {% block content %}
 
 
-<head>
+<style>
+
+/* Image Slider */
+.image-slider {
+    overflow: hidden;
+    max-width: 100%;
+    height: 530px; /* Define the desired height of the image container */
+}
+
+.slider-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s ease-in-out; /* Smooth transition */
+}
+
+.slider {
+    display: flex;
+    width: 100%;
+}
+
+.slider img {
+    width: 100%;
+    height: 1200px; /* Ensure it fills the container's height */
+    object-fit: cover; /* Maintain aspect ratio while filling the container */
+    object-position: top; /* Align the image from the top */
+    padding: 10px;
+}
+
+.line{
+    border: 5px solid rgb(26, 26, 94);
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+/* The clone of the first image will be added dynamically in JS */
+
+/* .symptoms {
+    padding: 40px;
+    background-color: #e8f0f4;
+    text-align: center;
+}
+
+.symptom-list {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+.symptom-item {
+    background-color: #003366;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 250px;
+    transition: transform 0.3s;
+}
+
+.symptom-item:hover {
+    transform: scale(1.05);
+} */
+
+/* Importing Poppins font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif; /* Applying Poppins font */
+    margin: 0;
+    padding: 0;
+    background-color: #f4f7fa; /* Lighter background color */
+}
+
+.symptoms {
+    padding: 40px;
+    background-color: #e8f0f4;
+    text-align: center;
+    position: relative;
+}
+
+.symptom-container {
+    overflow-x: auto; /* Enables horizontal scrolling */
+    padding: 20px 0;
+    white-space: nowrap; /* Prevents line breaks */
+    margin-bottom: 20px;
+}
+
+/* The symptom list will be displayed in a horizontal row */
+.symptom-list {
+    display: inline-flex;
+    gap: 30px;
+}
+
+.symptom-item {
+    background: radial-gradient(circle, #003366 40%, #4e8bc1 100%); /* Darker on outer edges, lighter in the center */
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 300px;  /* Button size remains unchanged */
+    transition: transform 0.3s, box-shadow 0.3s, background 0.3s ease-in-out;  /* Added transition for background */
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.symptom-item:hover {
+    transform: scale(1.05);  /* Slight grow on hover */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
+    background: radial-gradient(circle, #003366 30%, #4e8bc1 100%); /* Slightly more dark on hover */
+}
+
+.symptom-item:active {
+    transform: scale(0.98); /* Shrinks on click */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);  /* Reset shadow on click */
+    background: radial-gradient(circle, #003366 20%, #4e8bc1 100%);  /* Even darker effect on click */
+}
+
+.symptom-item h3 {
+    font-size: 18px;
+    margin: 0;
+    padding-bottom: 10px;
+    color: #f1f1f1;  /* Lighter text for better contrast */
+}
+
+.symptom-img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 5px;
+    border: 3px solid #ffffff;  /* White border around images */
+}
+
+/* Hover state for the image */
+.symptom-item:hover .symptom-img {
+    transform: scale(1.1); /* Slight zoom effect on hover */
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Ensuring a good background contrast for the entire page */
+h2 {
+    color: #003366;  /* Dark blue color for headings */
+    margin-bottom: 40px;
+    font-size: 36px;
+}
+
+/* Adding media queries for responsiveness */
+@media (max-width: 768px) {
+    .symptom-list {
+        flex-direction: column;
+        align-items: center;
+    }
+    .symptom-item {
+        width: 80%;  /* Full width on smaller screens */
+    }
+}
+
+
+
+
+/* Doctors Section */
+.doctors {
+    padding: 40px;
+    background-color: #FFFFFF;
+    text-align: center;
+}
+
+.doctor-list {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+.doctor-item {
+    background-color: #003366;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 250px;
+    transition: transform 0.3s;
+}
+
+.doctor-item:hover {
+    transform: scale(1.05);
+}
+
+.book-btn {
+    background-color: #4f8a8b; /* Soft Light Blue */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+.book-btn:hover {
+    background-color: #003366; /* Deep Blue */
+}
+
+/* Feedback Section */
+.feedback {
+    padding: 40px;
+    background-color: #e8f0f4;
+    text-align: center;
+}
+
+.feedback-list {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+.feedback-item {
+    background-color: #003366;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 300px;
+}
+
+/* Contact Us Section */
+.contact-us {
+    padding: 40px;
+    background-color: #FFFFFF;
+    text-align: center;
+}
+
+.contact-us form {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.contact-us textarea {
+    height: 100px;
+}
+
+.contact-us button {
+    margin-top: 20px;
+}
+
+</style>
+
+<!-- <head>
   <style media="screen">
     .jumbotron {
       margin-top: 0px;
@@ -62,8 +312,260 @@
   <br><br>
 </div>
 
-<br><br><br><br>
+<br><br><br><br> -->
 
+<body>
+
+ 
+
+  <!-- Image Slider Section -->
+  <section class="image-slider">
+      <div class="slider-container">
+          <div class="slider">
+              <img src="static/images/newimg2now.jpg" alt="Slide 1">
+              <img src="static/images/newimg3.jpg" alt="Slide 2">
+              <img src="static/images/newimg1.jpeg" alt="Slide 3">
+          </div>
+      </div>
+  </section>
+  <div class="line">
+
+  </div>
+
+  <!-- Symptoms Section -->
+  <!-- <section class="symptoms">
+      <h2>Common Symptoms</h2>
+      <div class="symptom-list">
+          <div class="symptom-item">
+              <h3>Common Cold</h3>
+          </div>
+          <div class="symptom-item">
+              <h3>Fever</h3>
+          </div>
+          <div class="symptom-item">
+              <h3>Stomach Ache</h3>
+          </div>
+      </div>
+  </section> -->
+  <!-- Symptoms Section -->
+<!-- Symptoms Section -->
+<!-- Symptoms Section -->
+<!-- Symptoms Section -->
+<section class="symptoms">
+    <h2>Common Symptoms</h2>
+    
+    <!-- Scrollable container -->
+    <div class="symptom-container">
+        <div class="symptom-list">
+            <!-- General Symptoms -->
+            <a href="/book-appointment?symptom=cold" class="symptom-item">
+                <img src="static/images/commoncold.png" alt="Common Cold" class="symptom-img">
+                <h3>Common Cold</h3>
+            </a>
+            <a href="/book-appointment?symptom=fever" class="symptom-item">
+                <img src="static/images/fever.png" alt="Fever" class="symptom-img">
+                <h3>Fever</h3>
+            </a>
+            <a href="/book-appointment?symptom=stomach-ache" class="symptom-item">
+                <img src="static/images/stomach.png" alt="Stomach Ache" class="symptom-img">
+                <h3>Stomach Ache</h3>
+            </a>
+
+            <!-- Cardiologist Symptoms -->
+            <a href="/book-appointment?symptom=chest-pain" class="symptom-item">
+                <img src="static/images/chestpain.png" alt="Chest Pain" class="symptom-img">
+                <h3>Chest Pain</h3>
+            </a>
+            <a href="/book-appointment?symptom=shortness-breath" class="symptom-item">
+                <img src="static/images/shortne.png" alt="Shortness of Breath" class="symptom-img">
+                <h3>Shortness of Breath</h3>
+            </a>
+
+            <!-- Dermatologist Symptoms -->
+            <a href="/book-appointment?symptom=rash" class="symptom-item">
+                <img src="static/images/rash.png" alt="Rash" class="symptom-img">
+                <h3>Rash</h3>
+            </a>
+            <a href="/book-appointment?symptom=acne" class="symptom-item">
+                <img src="static/images/acne.png" alt="Acne" class="symptom-img">
+                <h3>Acne</h3>
+            </a>
+
+            <!-- Allergist Symptoms -->
+            <a href="/book-appointment?symptom=allergic-reaction" class="symptom-item">
+                <img src="static/images/alle.png" alt="Allergic Reaction" class="symptom-img">
+                <h3>Allergic Reactions</h3>
+            </a>
+            <a href="/book-appointment?symptom=food-allergy" class="symptom-item">
+                <img src="static/images/foodall.png" alt="Food Allergies" class="symptom-img">
+                <h3>Food Allergies</h3>
+            </a>
+
+            <!-- Anesthesiologist Symptoms -->
+            <a href="/book-appointment?symptom=pre-surgery" class="symptom-item">
+                <img src="static/images/consulta.png" alt="Pre-surgery Consultations" class="symptom-img">
+                <h3>Pre-surgery Consultations</h3>
+            </a>
+            <a href="/book-appointment?symptom=pain-management" class="symptom-item">
+                <img src="static/images/painmanagement.webp" alt="Pain Management" class="symptom-img">
+                <h3>Pain Management</h3>
+            </a>
+
+            <!-- Colon and Rectal Surgeon Symptoms -->
+            <a href="/book-appointment?symptom=chronic-constipation" class="symptom-item">
+                <img src="static/images/constip.png" alt="Chronic Constipation" class="symptom-img">
+                <h3>Chronic Constipation</h3>
+            </a>
+            <a href="/book-appointment?symptom=rectal-bleeding" class="symptom-item">
+                <img src="static/images/bleed.png" alt="Rectal Bleeding" class="symptom-img">
+                <h3>Rectal Bleeding</h3>
+            </a>
+        </div>
+    </div>
+</section>
+
+
+
+
+  <!-- Doctors Section -->
+  <section class="doctors">
+      <h2>Our Doctors</h2>
+      <div class="doctor-list">
+          <div class="doctor-item">
+              <h3>Dr. John Doe</h3>
+              <p>Cardiologist</p>
+              <p>Available: 9 AM - 3 PM</p>
+              <button class="book-btn">Book Appointment</button>
+          </div>
+          <div class="doctor-item">
+              <h3>Dr. Jane Smith</h3>
+              <p>Neurologist</p>
+              <p>Available: 10 AM - 4 PM</p>
+              <button class="book-btn">Book Appointment</button>
+          </div>
+          <div class="doctor-item">
+              <h3>Dr. Emily White</h3>
+              <p>Pediatrician</p>
+              <p>Available: 8 AM - 2 PM</p>
+              <button class="book-btn">Book Appointment</button>
+          </div>
+      </div>
+  </section>
+
+  <!-- Feedback Section -->
+  <section class="feedback">
+      <h2>Patient Feedback</h2>
+      <div class="feedback-list">
+          <div class="feedback-item">
+              <p>"Great experience. The doctor was very attentive!"</p>
+              <h4>John K.</h4>
+          </div>
+          <div class="feedback-item">
+              <p>"Fast consultation and very professional!"</p>
+              <h4>Maria P.</h4>
+          </div>
+      </div>
+  </section>
+
+  <!-- Contact Us Section -->
+  <section class="contact-us">
+      <h2>Contact Us</h2>
+      <form action="#" method="POST">
+          <input type="text" placeholder="Your Name" required>
+          <input type="email" placeholder="Your Email" required>
+          <textarea placeholder="Your Message" required></textarea>
+          <button type="submit">Send Message</button>
+      </form>
+  </section>
+
+  <script src="js/app.js"></script>
+</body>
+
+
+<script>
+   //symptoms arrow//
+   
+    // const leftArrow = document.querySelector('.arrow.left');
+    // const rightArrow = document.querySelector('.arrow.right');
+    // const symptomContainer = document.querySelector('.symptom-container');
+
+    // let scrollAmount = 0;
+
+    // leftArrow.addEventListener('click', () => {
+    //     scrollAmount -= 300;  // Move left by the width of one symptom
+    //     symptomContainer.scrollTo({
+    //         left: scrollAmount,
+    //         behavior: 'smooth'
+    //     });
+    // });
+
+    // rightArrow.addEventListener('click', () => {
+    //     scrollAmount += 300;  // Move right by the width of one symptom
+    //     symptomContainer.scrollTo({
+    //         left: scrollAmount,
+    //         behavior: 'smooth'
+    //     });
+    // });
+
+//symptoms arrow
+  
+let currentIndex = 0;
+let images = document.querySelectorAll('.slider img'); // Get all the images in the slider
+let totalImages = images.length;
+
+// Clone the first image and append it to the end of the slider for seamless looping
+const firstImage = images[0].cloneNode(true);
+document.querySelector('.slider').appendChild(firstImage);
+
+// Recalculate the total number of images after cloning
+totalImages = images.length + 1; // +1 because we have now an extra image
+
+// Function to swipe the images every 2 seconds
+function swipeImages() {
+    currentIndex = (currentIndex + 1) % totalImages; // Move to the next image
+
+    // Move the carousel to the next image with a sliding transition
+    document.querySelector('.slider').style.transform = `translateX(-${currentIndex * 100}%)`;
+
+    // Check if we've reached the last image (which is the clone of the first image)
+    if (currentIndex === totalImages - 1) {
+        // After 1 second (duration of transition), reset back to the first image without transition
+        setTimeout(() => {
+            document.querySelector('.slider').style.transition = 'none'; // Disable the transition for reset
+            document.querySelector('.slider').style.transform = `translateX(0%)`; // Reset to the first image
+            currentIndex = 0; // Reset the index to the first image
+
+            // Re-enable the transition for smooth effect after a small delay
+            setTimeout(() => {
+                document.querySelector('.slider').style.transition = 'transform 0.5s ease-in-out';
+            }, 50); // Small delay to ensure the transition is re-enabled
+        }, 1000); // Delay to allow the last image to slide out completely
+    }
+}
+
+// Ensure the transition is enabled at the beginning
+setTimeout(() => {
+    document.querySelector('.slider').style.transition = 'transform 0.5s ease-in-out';
+}, 50); // Small delay to apply the transition after the initial setup
+
+// Start the image carousel with auto swipe every 2 seconds
+setInterval(swipeImages, 2000);
+
+// Optional: Adding left and right navigation buttons (if needed)
+function moveToNext() {
+    currentIndex = (currentIndex + 1) % totalImages;
+    document.querySelector('.slider').style.transform = `translateX(-${currentIndex * 100}%)`;
+}
+
+function moveToPrev() {
+    currentIndex = (currentIndex - 1 + totalImages) % totalImages;
+    document.querySelector('.slider').style.transform = `translateX(-${currentIndex * 100}%)`;
+}
+
+// Add event listeners for next/prev buttons (if you have buttons in your HTML)
+document.querySelector('.carousel-btn.right').addEventListener('click', moveToNext);
+document.querySelector('.carousel-btn.left').addEventListener('click', moveToPrev);
+</script>
 {% include "hospital/admin_doctor_patient_card.html" %}
 <br><br><br>
 

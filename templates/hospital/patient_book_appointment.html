@@ -40,11 +40,32 @@
     .menu {
       top: 50px;
     }
+
+
+    /* edit 2 */
+    .time-slots {
+        margin-top: 10px;
+    }
+    .time-slot {
+        padding: 8px 12px;
+        margin: 5px;
+        cursor: pointer;
+        border: 1px solid #ddd;
+    }
+    .time-slot.selected {
+        background-color: #007BFF;
+        color: white;
+    }
+    /* edit 2 */
   </style>
 
   <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <!-- edit 2 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.3/flatpickr.min.css">
+  <!-- edit 2 -->
+
 </head>
 <br><br>
 {% if message %}
@@ -69,9 +90,31 @@
             <div class="form-group">
               {% render_field appointmentForm.description class="form-control" placeholder="Description" %}
             </div>
-            <div class="form-group">
+
+            <!-- keep if removed edited -->
+            <!-- <div class="form-group">
               {% render_field appointmentForm.doctorId class="form-control" placeholder="doctor" %}
+            </div> -->
+            <!-- keep if removed edited  -->
+
+
+          <!-- edit paxi    -->
+          <div class="form-group">
+            <label for="doctorId">Choose Doctor:</label>
+            {% render_field appointmentForm.doctorId class="form-control" placeholder="Choose Doctor" %}
+          </div><div class="form-group">
+            <!-- edit 2 -->
+            <div class="form-group">
+              <label for="datepicker">Select a Date:</label>
+              <input type="text" id="datepicker" class="form-control" placeholder="Select a date" />
             </div>
+            <!-- edit 2 -->
+
+            <div id="time-slot-container" class="form-group" style="display:none;">
+              <h3>Select Available Time Slot:</h3>
+              <!-- Time slots will appear here after date and doctor selection -->
+          </div>
+          <!-- edit paxi -->
             
 
 
@@ -84,5 +127,93 @@
     </div>
   </div>
 </form>
+ 
+<!-- edit 2 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.3/flatpickr.min.js"></script>
+<script>
+     // Initialize the flatpickr date picker
+flatpickr("#datepicker", {
+    onChange: function(selectedDates, dateStr, instance) {
+        // Fetch the available time slots for the selected date and doctor
+        const doctorId = document.getElementById('id_doctorId').value;  // Get doctor ID from the selected doctor
+        console.log("Selected date: ", dateStr);  // Debugging: Log selected date
+        console.log("Doctor ID: ", doctorId);  // Debugging: Log selected doctor
+        fetchAvailableTimeSlots(dateStr, doctorId);  // Call function to fetch time slots
+    }
+});
 
+// Fetch available time slots for the selected date and doctor (from the Django backend)
+function fetchAvailableTimeSlots(date, doctorId) {
+    const apiUrl = `/get-available-times/?date=${date}&doctor_id=${doctorId}`;
+    console.log("Fetching time slots from API...");  // Debugging: Log the API call
+
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            console.log("API Response: ", data);  // Debugging: Log API response
+            if (data && data.availableTimes) {
+                populateTimeSlots(data.availableTimes);
+            } else {
+                console.error("No time slots available in the response.");
+            }
+        })
+        .catch(error => {
+            console.error("Error fetching time slots:", error);
+        });
+}
+
+// Populate the time slots dynamically
+function populateTimeSlots(availableTimes) {
+    const timeSlotContainer = document.getElementById('time-slot-container');
+    
+    // Check if the container exists before trying to modify it
+    if (!timeSlotContainer) {
+        console.error("Time slot container not found!");
+        return;
+    }
+
+    timeSlotContainer.style.display = 'block';  // Show the time slots container
+    timeSlotContainer.innerHTML = '<h3>Select a time slot:</h3>';  // Clear previous slots
+
+    if (availableTimes.length > 0) {
+        availableTimes.forEach(time => {
+            const timeSlotElement = document.createElement('div');
+            timeSlotElement.classList.add('time-slot');
+            timeSlotElement.setAttribute('data-time', time);
+
+            // Create a radio button for each time slot
+            const radioButton = document.createElement('input');
+            radioButton.type = 'radio';
+            radioButton.name = 'appointment_time';
+            radioButton.value = time;
+            radioButton.id = `time_${time}`;
+
+            const label = document.createElement('label');
+            label.setAttribute('for', `time_${time}`);
+            label.innerText = time;
+
+            // Append radio button and label to the time slot element
+            timeSlotElement.appendChild(radioButton);
+            timeSlotElement.appendChild(label);
+
+            // Add event listener for time slot selection
+            timeSlotElement.addEventListener('click', function() {
+                selectTimeSlot(timeSlotElement);
+            });
+
+            timeSlotContainer.appendChild(timeSlotElement);
+        });
+    } else {
+        timeSlotContainer.innerHTML = "<p>No available slots for this date.</p>";
+    }
+}
+
+// Handle time slot selection
+function selectTimeSlot(selectedSlot) {
+    const timeSlots = document.querySelectorAll('.time-slot');
+    timeSlots.forEach(slot => slot.classList.remove('selected'));  // Remove selection from all slots
+    selectedSlot.classList.add('selected');  // Add selection to the clicked slot
+}
+</script>
+<!-- edit 2 -->
 {% endblock content %}

@@ -900,3 +900,128 @@ def contactus_view(request):
 
 
 
+ #edit paxi 
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
+from .forms import DoctorUserForm, DoctorForm
+from django.contrib import messages
+from .models import Doctor
+
+def doctor_signup(request):
+    if request.method == "POST":
+        user_form = DoctorUserForm(request.POST)
+        doctor_form = DoctorForm(request.POST, request.FILES)
+        
+        if user_form.is_valid() and doctor_form.is_valid():
+            # Save User
+            user = user_form.save()
+            user.set_password(user.password)
+            user.save()
+
+            # Save Doctor and available_times
+            doctor = doctor_form.save(commit=False)
+            doctor.user = user
+
+            # Save selected available times
+            if doctor_form.cleaned_data['available_times']:
+                # If it's a ManyToManyField, set the values
+                doctor.available_times.set(doctor_form.cleaned_data['available_times'])
+            
+            doctor.save()
+
+            messages.success(request, 'Doctor registered successfully.')
+            return redirect('doctor_login')  # Redirect to login page or appropriate view
+        else:
+            messages.error(request, 'Error in registration.')
+    else:
+        user_form = DoctorUserForm()
+        doctor_form = DoctorForm()
+
+    return render(request, 'hospital/doctor_signup.html', {'user_form': user_form, 'doctor_form': doctor_form})
+
+
+
+
+
+
+#edit paxi 
+#edit paxi
+from django.shortcuts import render, redirect
+from .models import Appointment, Doctor, Patient
+from .forms import AppointmentForm
+
+def book_appointment(request):
+    if request.method == 'POST':
+        form = AppointmentForm(request.POST)
+        if form.is_valid():
+            doctor = form.cleaned_data['doctorId']  # The selected doctor
+            available_times = doctor.available_times  # Get the available time slots of the doctor
+
+            # Get the selected appointment time
+            appointment_time = form.cleaned_data['appointmentTime']
+
+            # Check if the selected time is in the available times of the doctor
+            if appointment_time in available_times:
+                # Save the appointment if the time is available
+                appointment = form.save(commit=False)
+                appointment.patientId = form.cleaned_data['patientId']  # Assign the patient
+                appointment.doctorId = doctor  # Assign the actual doctor object (not user.id)
+                appointment.save()
+
+                return redirect('appointment_confirmation')  # Redirect to confirmation page
+            else:
+                form.add_error('appointmentTime', 'The selected time is not available.')
+
+    else:
+        form = AppointmentForm()
+
+    return render(request, 'hospital/book_appointment.html', {'form': form})
+
+
+#edit 2 
+# views.py
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .forms import DoctorAvailabilityForm
+from .models import DoctorAvailability, Doctor
+
+@login_required
+def set_doctor_availability(request):
+    # Check if the logged-in user is a doctor
+    try:
+        doctor = Doctor.objects.get(user=request.user)
+    except Doctor.DoesNotExist:
+        # If the user is not a doctor, redirect them somewhere else
+        return redirect('home')  # Redirect to homepage or appropriate place
+    
+    if request.method == 'POST':
+        form = DoctorAvailabilityForm(request.POST)
+        if form.is_valid():
+            # Save the availability record with the logged-in doctor
+            doctor_availability = form.save(commit=False)
+            doctor_availability.doctor = doctor  # Associate the logged-in doctor
+            doctor_availability.save()
+            return redirect('doctor_availability')  # Redirect to some page (e.g., list of availabilities)
+    else:
+        form = DoctorAvailabilityForm()
+
+    return render(request, 'doctor/set_availability.html', {'form': form})
+#edit 2
+
+#edit 2.1 
+# In hospital/views.py
+from django.http import JsonResponse
+
+def get_available_times(request):
+    # Get date and doctor_id from query parameters
+    date = request.GET.get('date')
+    doctor_id = request.GET.get('doctor_id')
+
+    if not date or not doctor_id:
+        return JsonResponse({'error': 'Invalid parameters'}, status=400)
+
+    # Logic to fetch available time slots based on the date and doctor_id
+    available_times = ["09:00 AM", "09:30 AM","10:00 AM", "11:00 AM", "02:00 PM"]  # Mocked data
+
+    return JsonResponse({'availableTimes': available_times})

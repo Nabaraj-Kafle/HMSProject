@@ -7,6 +7,10 @@ from django.contrib.auth.views import LoginView,LogoutView
 #-------------FOR ADMIN RELATED URLS
 app_name = 'hospital'
 urlpatterns = [
+    # edit 2 
+    path('get-available-times/', views.get_available_times, name='get-available-times'),
+    # edit 2
+    
     path('admin/', admin.site.urls),
     path('',views.home_view,name=''),
     path('hospital/home', views.home_view),
