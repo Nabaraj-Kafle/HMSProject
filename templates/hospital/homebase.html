@@ -11,6 +11,35 @@
   {% include "hospital/navbar.html" %}
   {%block content%}
 
+  {% if recommended_doctors %}
+<div class="container">
+    <h2 class="text-center">Our Specialist Doctors</h2>`1`
+    <div class="row">
+        {% for doctor in recommended_doctors %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if doctor.profile_pic %}
+                <img src="{{ doctor.profile_pic.url }}" class="card-img-top" alt="{{ doctor.get_name }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ doctor.get_name }}</h5>
+                    <p class="card-text">
+                        <strong>Speciality:</strong> {{ doctor.department }}<br>
+                        <strong>Contact:</strong> {{ doctor.mobile }}
+                    </p>
+                    {% if user.is_authenticated and user.patient %}
+                    <a href="{% url 'hospital:book-appointment' doctor.id %}" class="btn btn-primary">Book Appointment</a>
+                    {% else %}
+                    <a href="{% url 'patientlogin' %}" class="btn btn-primary">Login to Book Appointment</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
   {%endblock content%}
   {% include "hospital/footer.html" %}
 </body>

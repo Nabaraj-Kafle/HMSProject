@@ -4,14 +4,34 @@ from django.utils import timezone
 
 
 
-departments=[('Cardiologist','Cardiologist'),
-('Dermatologists','Dermatologists'),
-('Emergency Medicine Specialists','Emergency Medicine Specialists'),
-('Allergists/Immunologists','Allergists/Immunologists'),
-('Anesthesiologists','Anesthesiologists'),
-('Colon and Rectal Surgeons','Colon and Rectal Surgeons')
+departments=[
+    ('Cardiologist','Cardiologist'),
+    ('Dermatologists', 'Dermatologists'),
+    ('Emergency Medicine Specialists', 'Emergency Medicine Specialists'),
+    ('Allergists/Immunologists', 'Allergists/Immunologists'),
+    ('Anesthesiologists', 'Anesthesiologists'),
+    ('Colon and Rectal Surgeons', 'Colon and Rectal Surgeons'),
+    ('Endocrinologists', 'Endocrinologists'),
+    ('Gastroenterologists', 'Gastroenterologists'),
+    ('Hematologists', 'Hematologists'),
+    ('Infectious Disease Specialists', 'Infectious Disease Specialists'),
+    ('Nephrologists', 'Nephrologists'),
+    ('Neurologists', 'Neurologists'),
+    ('Obstetricians/Gynecologists', 'Obstetricians/Gynecologists'),
+    ('Oncologists', 'Oncologists'),
+    ('Ophthalmologists', 'Ophthalmologists'),
+    ('Orthopedic Surgeons', 'Orthopedic Surgeons'),
+    ('Otolaryngologists', 'Otolaryngologists'),
+    ('Pathologists', 'Pathologists'),
+    ('Pediatricians', 'Pediatricians'),
+    ('Psychiatrists', 'Psychiatrists'),
+    ('Pulmonologists', 'Pulmonologists'),
+    ('Radiologists', 'Radiologists'),
+    ('Rheumatologists', 'Rheumatologists'),
+    ('Urologists', 'Urologists')
 ]
-class Doctor(models.Model):  
+
+class Doctor(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
     profile_pic= models.ImageField(upload_to='profile_pic/DoctorProfilePic/',null=True,blank=True)
     address = models.CharField(max_length=40)
@@ -68,11 +88,51 @@ class Patient(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
     profile_pic= models.ImageField(upload_to='profile_pic/PatientProfilePic/',null=True,blank=True)
     address = models.CharField(max_length=40)
+    age = models.CharField(max_length=10, null=False, default=0)
+    gender = models.CharField(max_length=10, null=False, default='Male')    
     mobile = models.CharField(max_length=20,null=False)
     symptoms = models.CharField(max_length=100,null=False)
     assignedDoctorId = models.PositiveIntegerField(null=True)
     admitDate=models.DateField(auto_now=True)
     status=models.BooleanField(default=False)
+
+    def get_recommended_doctors(self, limit=5):
+        """Get recommended doctors for this patient based on symptoms"""
+        symptoms = [s.strip().lower() for s in self.symptoms.split(',')]
+        
+        # Get relevant department mappings
+        department_scores = defaultdict(float)
+        
+        for symptom in symptoms:
+            mappings = SymptomDepartmentMapping.objects.filter(
+                symptom__icontains=symptom
+            )
+            
+            for mapping in mappings:
+                department_scores[mapping.department.department] += mapping.weight
+        
+        # Get doctors from the most relevant departments
+        recommended_doctors = []
+        
+        for department, score in sorted(
+            department_scores.items(), 
+            key=lambda x: x[1], 
+            reverse=True
+        ):
+            doctors = Doctor.objects.filter(
+                department=department,
+                status=True  # Only active doctors
+            ).order_by('?')[:limit]  # Random selection within department
+            
+            recommended_doctors.extend(doctors)
+            
+            if len(recommended_doctors) >= limit:
+                break
+        
+        return recommended_doctors[:limit]
+
+
+
     @property
     def get_name(self):
         return self.user.first_name+" "+self.user.last_name
@@ -81,8 +141,7 @@ class Patient(models.Model):
         return self.user.id
     def __str__(self):
         return self.user.first_name+" ("+self.symptoms+")"
-
-
+ 
 class Appointment(models.Model):
     patientId=models.PositiveIntegerField(null=True)
     doctorId=models.PositiveIntegerField(null=True)
@@ -112,4 +171,17 @@ class PatientDischargeDetails(models.Model):
     OtherCharge=models.PositiveIntegerField(null=False)
     total=models.PositiveIntegerField(null=False)
 
+class DoctorSpecialization(models.Model):
+    department = models.CharField(max_length=50, choices=departments)
+    keywords = models.TextField(help_text="Comma-separated keywords related to this specialization")
+    
+    def __str__(self):
+        return self.department
 
+class SymptomDepartmentMapping(models.Model):
+    symptom = models.CharField(max_length=100)
+    department = models.ForeignKey(DoctorSpecialization, on_delete=models.CASCADE)
+    weight = models.FloatField(default=1.0)
+    
+    def __str__(self):
+        return f"{self.symptom} -> {self.department}"
